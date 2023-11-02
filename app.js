@@ -9,14 +9,22 @@ import accountInfoRouter from './Routes/AccountInfo.Route.js'
 const app = express();
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
+const PORT = process.env.PORT || 3036;
 let url = "mongodb+srv://Tout:Lkr8k1SHwWgitNSr@cluster0.mybmtfa.mongodb.net/SCM?retryWrites=true&w=majority"
 mongoose.connect(url).then(result => {
     app.use(cors())
+
+    app.get("/",(req,res)=>{
+        res.setHeader("Access-Control-Allow-Credentials",true);
+        res.setHeader("Access-Control-Allow-Origin: *");
+      });
+      
     app.use("/admin", adminRouter);
     app.use("/student", studentRouter);
     app.use("/accountInfo",accountInfoRouter);
-    app.listen(3036, () => {
+    app.listen(PORT, () => {
         console.log("Mongoose/server connect")
+        console.log(`Application is runing on the port ${PORT}`)
     })
 }).catch(err => {
     console.log(err);
