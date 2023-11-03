@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const studentFeeSchema = new mongoose.Schema({
     stdId: {
         type:String,
@@ -19,5 +18,4 @@ const studentFeeSchema = new mongoose.Schema({
         default:"online"
     }
 });
-
 export const StudentFee = mongoose.model('studentFee', studentFeeSchema);

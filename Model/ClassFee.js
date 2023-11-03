@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const classFeeSchema = new mongoose.Schema({
     className: {
         type: String,
@@ -9,7 +8,5 @@ const classFeeSchema = new mongoose.Schema({
         type:Number,
         require:true
     }
-    
 });
-
 export const ClassFee = mongoose.model('classFee', classFeeSchema);

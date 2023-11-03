@@ -52,5 +52,4 @@ const studentPersonalInfoSchema = new mongoose.Schema({
     incomeProof: String,
     previousClassRollNumber: String,
 });
-
 export const StudentPersonalInfo = mongoose.model('studentPersonalInfo', studentPersonalInfoSchema);

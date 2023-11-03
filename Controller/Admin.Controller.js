@@ -2,10 +2,7 @@ import { request, response } from "express";
 import { Admin } from "../Model/Admin.Model.js";
 
 export const signIn = async (request, response, next) => {
-    console.log("Admin sign in");
-    console.log(request.body.schoolId)
-    console.log(request.body.password)
-
+   
     try {
         let admin = await Admin.findOne({ schoolId: request.body.schoolId });
         if (admin) {
@@ -14,7 +11,6 @@ export const signIn = async (request, response, next) => {
         return response.status(400).json({ result: "invalid school id", status: false })
     }
     catch (err) {
-        console.log(err)
         return response.status(500).json({ err: "internal server error", status: false });
     }
 }

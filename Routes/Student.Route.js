@@ -1,6 +1,5 @@
 import express from "express";
 import { registration,feeCollection, studentAttendance, verifyStudent, classFee, fetchFee, checkAlreadyTransactionId } from "../Controller/Student.Controller.js";
-
 const router=express.Router();
 router.post("/fee",feeCollection)
 router.post("/verifyStudent",verifyStudent);
