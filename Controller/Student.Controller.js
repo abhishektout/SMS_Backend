@@ -5,6 +5,7 @@ import { StudentAttendance } from "../Model/StudentAttendance.Model.js";
 import { ClassFee } from "../Model/ClassFee.js";
 import { resolve } from "path";
 import { AccountInfo } from "../Model/SchoolAccountInfo.js";
+import nodemailer from 'nodemailer';
 export const verifyStudent = async (request, response, next) => {
     try {
         let student = await StudentPersonalInfo.findOne({ aadharNumber: request.body.aadharNumber });
@@ -15,29 +16,52 @@ export const verifyStudent = async (request, response, next) => {
     }
 }
 export const registration = async (request, response, next) => {
+    console.log("innner registration")
     try {
         const student = await StudentPersonalInfo.findOne({ aadharNumber: request.body.aadharNumber });
         if (!student) {
-            const registration = await StudentPersonalInfo.create({stdId:request.body.stdId,stdName:request.body.stdName,stdFname:request.body.stdFname,stdMothername:request.body.stdMothername,stdGender:request.body.stdGender,stdClass:request.body.stdClass,stdAddress:request.body.stdAddress,stdFee:request.body.stdFee,dob:request.body.dob,aadharNumber:request.body.aadharNumber,castNumber:request.body.castNumber,previousClass:request.body.previousClass,birthCertificate:request.body.birthCertificate,previousClassRollNumber:request.body.previousClassRollNumber,incomeProof:request.body.incomeProof});
+            const registration = await StudentPersonalInfo.create({ stdContact: request.body.stdContact, stdEmail: request.body.stdEmail, stdId: request.body.stdId, stdName: request.body.stdName, stdFname: request.body.stdFname, stdMothername: request.body.stdMothername, stdGender: request.body.stdGender, stdClass: request.body.stdClass, stdAddress: request.body.stdAddress, stdFee: request.body.stdFee, dob: request.body.dob, aadharNumber: request.body.aadharNumber, castNumber: request.body.castNumber, previousClass: request.body.previousClass, birthCertificate: request.body.birthCertificate, previousClassRollNumber: request.body.previousClassRollNumber, incomeProof: request.body.incomeProof });
             if (registration) {
-                await StudentFee.create({stdId:request.body.stdId,transactionId:request.body.transactionId,fee:request.body.fee})
-                    .then((result) => {
-                        response.status(200).json({ status: true, message: "fee collected" });
-                    })
-                    .catch((err) => {
-                        response.status(401).json({ status: false, message: "fee not collected" });
+                let Finalyregisteration= StudentFee.create({ stdId: request.body.stdId, transactionId: request.body.transactionId, fee: request.body.fee })
+                if(Finalyregisteration){
+                    var transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: 'abhishek.tout@gmail.com',
+                            pass: 'borw dxnh fqhj ldfy'
+                        }
                     });
-            } 
+                    var mailOptions = {
+                        from: 'abhishek.tout@gmail.com',
+                        to: request.body.stdEmail,
+                        subject: 'Mount Carmal School Admission',
+                        text: 'Dear student your your admission successfully' + "             your student id is:  " + request.body.stdId + "          student name is :" + request.body.stdName + "      student father name is : " + request.body.stdFname + "     class fee :   " + request.body.stdFee
+                    };
+                    transporter.sendMail(mailOptions, function (error, info) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                           return response.status(200).json({ status: true, message: "Successfully send mail" });
+                        }
+                    });
+                   return response.status(200).json({ status: true, message: "Successfully registration but email not sent" });
+                } 
+                else{
+                    response.status(401).json({ status: false, message: "fee not collected" });
+                }  
+            }
         } else {
             response.status(400).json({ result: "Student is already registered", status: false });
         }
     } catch (err) {
+        console.log(err);
         response.status(500).json({ err: "Internal server error", status: false });
     }
 };
 export const checkAlreadyTransactionId = async (request, response, next) => {
     try {
-        let transactionId=request.body.transactionId;
+        let transactionId = request.body.transactionId;
         const already = await StudentFee.findOne({ transactionId });
         if (!already) {
             return response.status(200).json({ result: "Verified", status: true });
@@ -56,14 +80,14 @@ export const feeCollection = async (request, response, next) => {
         }
         const transactionId = await StudentFee.findOne({ transactionId: request.body.transactionId });
         if (!transactionId) {
-            let checkTransValid=await AccountInfo.findOne({transactionId: request.body.transactionId })
-            if(checkTransValid){
+            let checkTransValid = await AccountInfo.findOne({ transactionId: request.body.transactionId })
+            if (checkTransValid) {
                 const fee = await StudentFee.create(request.body);
                 return response.status(200).json({ status: true, message: "Fee collected" });
             }
-            else{
-                return response.status(410).json({message:"Transaction id not valid",status:false})
-            }                   
+            else {
+                return response.status(410).json({ message: "Transaction id not valid", status: false })
+            }
         } else {
             return response.status(400).json({ message: "Transaction ID already exists", status: false });
         }
@@ -93,7 +117,7 @@ export const fetchFee = async (request, response, next) => {
         const classFee = await ClassFee.findOne({ className: request.body.className });
         if (classFee)
             return response.status(200).json({ result: classFee.fee });
-        else 
+        else
             return response.status(404).json({ error: "Class fee not found" });
     } catch (err) {
         return response.status(500).json({ error: "An error occurred" });

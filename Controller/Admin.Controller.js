@@ -2,7 +2,6 @@ import { request, response } from "express";
 import { Admin } from "../Model/Admin.Model.js";
 
 export const signIn = async (request, response, next) => {
-   
     try {
         let admin = await Admin.findOne({ schoolId: request.body.schoolId });
         if (admin) {
