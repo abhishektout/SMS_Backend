@@ -3,6 +3,9 @@ import { Admin } from "../Model/Admin.Model.js";
 
 export const signIn = async (request, response, next) => {
     console.log("Admin sign in");
+    console.log(request.body.schoolId)
+    console.log(request.body.password)
+
     try {
         let admin = await Admin.findOne({ schoolId: request.body.schoolId });
         if (admin) {

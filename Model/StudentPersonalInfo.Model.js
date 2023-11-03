@@ -38,7 +38,7 @@ const studentPersonalInfoSchema = new mongoose.Schema({
         required: true,
     },                                                                                                                                                 
     aadharNumber: {
-        type: Number,
+        type: String,
         required: true,
         unique: true,
     },
@@ -50,7 +50,7 @@ const studentPersonalInfoSchema = new mongoose.Schema({
     previousClass:String,
     birthCertificate: String,
     incomeProof: String,
-    previousClassRollNumber: Number,
+    previousClassRollNumber: String,
 });
 
 export const StudentPersonalInfo = mongoose.model('studentPersonalInfo', studentPersonalInfoSchema);
