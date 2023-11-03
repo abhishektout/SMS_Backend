@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const studentAttendanceSchema= new mongoose.Schema({
     stdId: {
         type: String,
@@ -22,5 +21,4 @@ const studentAttendanceSchema= new mongoose.Schema({
         require:true
     }
 });
-
 export const StudentAttendance = mongoose.model('studentAttendance', studentAttendanceSchema);
