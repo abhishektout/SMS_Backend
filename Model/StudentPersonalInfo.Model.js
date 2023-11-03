@@ -42,6 +42,14 @@ const studentPersonalInfoSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
+    stdContact:{
+        type:String,
+        require:true
+    },
+    stdEmail:{
+        type:String,
+        require:true
+    },
     castNumber: {
         type: String,
         required: true,
